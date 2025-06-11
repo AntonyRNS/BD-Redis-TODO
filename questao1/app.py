@@ -52,13 +52,13 @@ def get_tasks():
 
 def save_tasks(tasks):
     try:
+        
         redis_client.set(TASKS_KEY, json.dumps(tasks))
+        return True
     except Exception as ex:
         print('Erro ao salvaras tarefas, {ex}')
+        return False
 
-    # TODO: Implementar salvamento no Redis
-    print(f"MOCK: Salvando {len(tasks)} tarefas no Redis")
-    return False  # Mudar para True após implementar
 
 def get_pending_count():
     """Contar tarefas pendentes"""
