@@ -3,69 +3,59 @@ from flask import Flask, render_template, request, jsonify
 import json
 import uuid
 from datetime import datetime
+import redis
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 
-# CONFIGURAÇÃO REDIS - PARA SER IMPLEMENTADA PELOS ALUNOS
-# redis_client = redis.Redis(
-#     host='localhost',       # Substitua pelo host do seu Redis
-#     port=6379,              # Substitua pela porta do seu Redis
-#     decode_responses=True,  # Para decodificar respostas como strings
-#     username='default',     # Substitua pelo usuario fornecido pelo Redis
-#     password='sua_senha',   # Substitua pela senha do banco do seu Redis
-# )
+"""Basic connection example.
+"""
+
+"""Basic connection example.
+"""
+
+
+r = redis.Redis(
+    host='redis-19001.c336.samerica-east1-1.gce.redns.redis-cloud.com',
+    port=19001,
+    decode_responses=True,
+    username="default",
+    password="CkZcXjVN8EpjIWmJEt0IrhoT2xNWSGCP",
+)
+
+success = r.set('foo', 'bar')
+# True
+
+result = r.get('foo')
+print(result)
+# >>> bar
+
+
+
+
 
 # ALUNOS: Implementem esta função para conectar ao Redis
-redis_client = None  # Substitua pela configuração real do Redis
+redis_client = r  # Substitua pela configuração real do Redis
 
 TASKS_KEY = "todo_tasks"
 
 def get_tasks():
-    """
-    ALUNOS: Implementem esta função para buscar tarefas do Redis
-    
-    A função deve:
-    1. Conectar ao Redis
-    2. Buscar dados da chave TASKS_KEY
-    3. Deserializar o JSON
-    4. Retornar uma lista de tarefas
-    5. Tratar erros de conexão
-    
-    Formato esperado de retorno:
-    [
-        {
-            "id": "uuid-string",
-            "text": "Texto da tarefa",
-            "completed": False,
-            "order": 0,
-            "created_at": "2023-11-15T10:30:00.000000"
-        }
-    ]
-    """
-    # TODO: Implementar busca no Redis
-    # Dados mock para desenvolvimento (remover após implementar Redis)
-    return [
-        {"id": "1", "text": "Implementar conexão Redis", "completed": False, "order": 0},
-        {"id": "2", "text": "Implementar função get_tasks()", "completed": False, "order": 1},
-        {"id": "3", "text": "Implementar função save_tasks()", "completed": False, "order": 2},
-        {"id": "4", "text": "Testar todas as funcionalidades", "completed": False, "order": 3}
-    ]
+    try:
+
+        dados_tarefas = redis_client.get(TASKS_KEY)
+        if dados_tarefas:
+            return json.loads(dados_tarefas)
+
+    except Exception as ex:
+        print('Erro ao buscar tarefas, {ex}')
+    return []
 
 def save_tasks(tasks):
-    """
-    ALUNOS: Implementem esta função para salvar tarefas no Redis
-    
-    A função deve:
-    1. Conectar ao Redis
-    2. Serializar a lista de tarefas para JSON
-    3. Salvar na chave TASKS_KEY
-    4. Retornar True se sucesso, False se erro
-    5. Tratar erros de conexão
-    
-    Parâmetros:
-    - tasks: Lista de dicionários com as tarefas
-    """
+    try:
+        redis_client.set(TASKS_KEY, json.dumps(tasks))
+    except Exception as ex:
+        print('Erro ao salvaras tarefas, {ex}')
+
     # TODO: Implementar salvamento no Redis
     print(f"MOCK: Salvando {len(tasks)} tarefas no Redis")
     return False  # Mudar para True após implementar
