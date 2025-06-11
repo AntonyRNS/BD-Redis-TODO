@@ -15,7 +15,7 @@ app.config['SECRET_KEY'] = 'your-secret-key-heredddddd'
 
 """Basic connection example.
 """
-
+load_dotenv()
 
 r = redis.Redis(
     host= redis.getenv('REDIS_HOST'),
