@@ -4,9 +4,11 @@ import json
 import uuid
 from datetime import datetime
 import redis
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SECRET_KEY'] = 'your-secret-key-heredddddd'
 
 """Basic connection example.
 """
@@ -16,11 +18,11 @@ app.config['SECRET_KEY'] = 'your-secret-key-here'
 
 
 r = redis.Redis(
-    host='redis-19001.c336.samerica-east1-1.gce.redns.redis-cloud.com',
-    port=19001,
+    host= redis.getenv('REDIS_HOST'),
+    port= redis.getenv('REDIS_PORT'),
     decode_responses=True,
-    username="default",
-    password="CkZcXjVN8EpjIWmJEt0IrhoT2xNWSGCP",
+    username= redis.getenv('REDIS_USERNAME'),
+    password= redis.getenv('REDIS_PASSWORD'),
 )
 
 success = r.set('foo', 'bar')
